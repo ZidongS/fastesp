@@ -25,17 +25,14 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-EXP = Path("/home/shuzidong/workfile/multipole2potential/experiment/frag_surface_esp")
-
 sys.path.insert(0, str(ROOT))
 from fastesp import Basis, read_molden                      # noqa: E402
 from fastesp.table import basis_payload, write_basis_payload  # noqa: E402
-sys.path.insert(0, str(EXP / "scripts"))
+sys.path.insert(0, str(HERE))
 
-MWFN = Path("/home/shuzidong/workfile/dielec/QMSEP/multiwfn_install/"
-            "Multiwfn_2026.4.10_bin_Linux_noGUI/Multiwfn_noGUI")
-ORCA_DIR = Path("/home/shuzidong/workfile/dielec/QMSEP/orca_install/"
-                "orca_6_1_1_linux_x86-64_shared_openmpi418_nodmrg")
+# override with MULTIWFN_BIN / ORCA_DIR for your installation
+MWFN = Path(os.environ.get("MULTIWFN_BIN", "Multiwfn_noGUI"))
+ORCA_DIR = Path(os.environ.get("ORCA_DIR", ""))
 EH_TO_V = 27.211386245988
 
 
@@ -73,7 +70,7 @@ def main():
     # ---------------- Multiwfn -------------------------------------------
     mw = {}
     if not args.skip_multiwfn:
-        import run_esp as RE
+        import mwfn_runner as RE
 
         base = {}
         for nt in (1, 8):

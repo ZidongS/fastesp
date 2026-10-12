@@ -22,8 +22,17 @@ sbatch sbatch/benchmark.sbatch
 ## Tool paths
 
 `benchmark.py`, `check_density_mwfn.py` and `mwfn_grid_convergence.py` shell out
-to Multiwfn and ORCA's `orca_2mkl`. Edit the `MWFN` / `ORCA_DIR` constants at the
-top of those files for your installation.
+to Multiwfn (and need ORCA's `orca_2mkl` only for `.gbw` input). Point them at
+your installation with environment variables:
+
+```bash
+export MULTIWFN_BIN=/path/to/Multiwfn_noGUI
+export ORCA_DIR=/path/to/orca_install_dir      # the one holding orca_2mkl
+```
+
+`mwfn_runner.py` is a self-contained Multiwfn driver (settings.ini handling,
+menu stream, point-file I/O, baseline timing) so the benchmarks have no
+dependency beyond Multiwfn itself.
 
 ## Test case
 

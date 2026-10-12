@@ -24,10 +24,9 @@ sys.path.insert(0, str(ROOT))
 from fastesp.molden import read_molden   # noqa: E402
 from fastesp.basis import Basis          # noqa: E402
 
-MWFN = Path("/home/shuzidong/workfile/dielec/QMSEP/multiwfn_install/"
-            "Multiwfn_2026.4.10_bin_Linux_noGUI/Multiwfn_noGUI")
-ORCA_DIR = Path("/home/shuzidong/workfile/dielec/QMSEP/orca_install/"
-                "orca_6_1_1_linux_x86-64_shared_openmpi418_nodmrg")
+# override with MULTIWFN_BIN / ORCA_DIR for your installation
+MWFN = Path(os.environ.get("MULTIWFN_BIN", "Multiwfn_noGUI"))
+ORCA_DIR = Path(os.environ.get("ORCA_DIR", ""))
 
 
 def _unlimited():
