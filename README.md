@@ -10,9 +10,9 @@ analytically, and solved on the GPU.**
 `fastesp` computes
 
 $$
-V(\mathbf{C}) \;=\; \sum_{A} \frac{Z_A}{\lvert \mathbf{C} - \mathbf{R}_A \rvert}
-\;-\; \sum_{\mu\nu} P_{\mu\nu}\,
-\Big\langle \mu \,\Big\lvert\, \frac{1}{\lvert \mathbf{r} - \mathbf{C} \rvert} \,\Big\rvert\, \nu \Big\rangle
+V(\mathbf{C}) = \sum_{A} \frac{Z_A}{\lvert \mathbf{C} - \mathbf{R}_A \rvert}
+- \sum_{\mu\nu} P_{\mu\nu}
+\Big\langle \mu \Big\lvert \frac{1}{\lvert \mathbf{r} - \mathbf{C} \rvert} \Big\rvert \nu \Big\rangle
 $$
 
 at an arbitrary set of points, without any real-space quadrature. The
@@ -110,19 +110,19 @@ Hermite Gaussians $\Lambda_{\mathbf{t}}$ gives the exact closed form
 
 $$
 g_A^{\mathbf{a}} g_B^{\mathbf{b}}
-  \;=\; K \sum_{\mathbf{t}} E_{\mathbf{t}}\, \Lambda_{\mathbf{t}}(\mathbf{r} - \mathbf{P}),
+  = K \sum_{\mathbf{t}} E_{\mathbf{t}} \Lambda_{\mathbf{t}}(\mathbf{r} - \mathbf{P}),
 \qquad
-\int \frac{\Lambda_{\mathbf{t}}(\mathbf{r}')}{\lvert \mathbf{R} - \mathbf{r}' \rvert}\, d\mathbf{r}'
-  \;=\; (-1)^{\lvert \mathbf{t} \rvert}
-        \left(\frac{\partial}{\partial \mathbf{R}}\right)^{\!\mathbf{t}} F(\mathbf{R}),
+\int \frac{\Lambda_{\mathbf{t}}(\mathbf{r}')}{\lvert \mathbf{R} - \mathbf{r}' \rvert} d\mathbf{r}'
+  = (-1)^{\lvert \mathbf{t} \rvert}
+        \left(\frac{\partial}{\partial \mathbf{R}}\right)^{\mathbf{t}} F(\mathbf{R}),
 \qquad
-F(\mathbf{R}) = \frac{2\pi}{p} F_0\!\left(p R^2\right)
+F(\mathbf{R}) = \frac{2\pi}{p} F_0\left(p R^2\right)
 $$
 
 and the derivative is expanded exactly by the one-dimensional recurrence
 
 $$
-a_{t+1,\,j} \;=\; -\,a_{t,\,j} \;+\; (t - 2j + 2)\, a_{t,\,j-1}.
+a_{t+1,j} = -a_{t,j} + (t - 2j + 2)a_{t,j-1}.
 $$
 
 The structural step that makes this fast: **everything except
@@ -133,8 +133,8 @@ pairs — weighted by the density matrix — yields, once per primitive pair, a
 sparse table $G[\boldsymbol{\alpha}, m]$ such that
 
 $$
-I_{\text{pair}}(\mathbf{C}) \;=\; K \sum_{\boldsymbol{\alpha},\, m}
-  G[\boldsymbol{\alpha}, m] \; \mathbf{R}^{\boldsymbol{\alpha}} \; F_m\!\left(p R^2\right).
+I_{\text{pair}}(\mathbf{C}) = K \sum_{\boldsymbol{\alpha}, m}
+  G[\boldsymbol{\alpha}, m]  \mathbf{R}^{\boldsymbol{\alpha}}  F_m\left(p R^2\right).
 $$
 
 Per point that is one Boys evaluation, a short monomial schedule and one dot
@@ -147,15 +147,15 @@ point set.
 Screening uses the rigorous bound
 
 $$
-\lvert I_{\text{pair}} \rvert \;\le\; K \, \frac{\int \lvert \rho_{\text{pair}} \rvert \, d\mathbf{r}}{d},
+\lvert I_{\text{pair}} \rvert \le K  \frac{\int \lvert \rho_{\text{pair}} \rvert  d\mathbf{r}}{d},
 $$
 
-where $\int \lvert \rho_{\text{pair}} \rvert \, d\mathbf{r}$ comes from the
+where $\int \lvert \rho_{\text{pair}} \rvert  d\mathbf{r}$ comes from the
 $\lvert He_n \rvert$ moment products computed at build time. The builder also
 prints the sum rule
 
 $$
-\mathrm{Tr}(\mathbf{P}\mathbf{S}) \;=\; N_{\text{elec}}
+\mathrm{Tr}(\mathbf{P}\mathbf{S}) = N_{\text{elec}}
 $$
 
 as a sanity check on the basis it just read.
@@ -169,7 +169,7 @@ and $\max\lvert \mathbf{C}^{\mathsf{T}} \mathbf{S} \mathbf{C} - \mathbf{I} \rver
 1. **Primitive normalisation.** ORCA writes GTO coefficients that already include
 
    $$
-   N_s(\alpha, l) \;=\; \left(\frac{2\alpha}{\pi}\right)^{3/4} (4\alpha)^{l/2},
+   N_s(\alpha, l) = \left(\frac{2\alpha}{\pi}\right)^{3/4} (4\alpha)^{l/2},
    $$
 
    the radial prefactor *without* the angular $(2l-1)!!$ factor of a fully
