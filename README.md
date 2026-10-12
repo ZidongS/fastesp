@@ -1,19 +1,21 @@
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/9768c83d-dbb4-4a73-8ca2-08cf2b1ab345" alt="fastesp logo" width="180">
-</p>
-
-<h1 align="center">fastesp</h1>
-
-<p align="center">
-  <strong>Exact electrostatic potential from a Gaussian-basis wavefunction — evaluated analytically, and solved on the GPU.</strong>
-</p>
-
-<p align="center">
-  <a href="https://github.com/ZidongS/fastesp/actions/workflows/tests.yml"><img src="https://github.com/ZidongS/fastesp/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
-  <a href="https://pypi.org/project/fastesp/"><img src="https://img.shields.io/pypi/v/fastesp.svg" alt="PyPI"></a>
-  <a href="https://pypi.org/project/fastesp/"><img src="https://img.shields.io/pypi/pyversions/fastesp.svg" alt="Python"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-</p>
+<table>
+  <tr>
+    <td width="160" align="center" valign="middle">
+      <img src="https://github.com/user-attachments/assets/9768c83d-dbb4-4a73-8ca2-08cf2b1ab345" alt="fastesp logo" width="140">
+    </td>
+    <td valign="middle">
+      <h1>fastesp</h1>
+      <p>
+        <a href="https://github.com/ZidongS/fastesp/actions/workflows/tests.yml"><img src="https://github.com/ZidongS/fastesp/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
+        <a href="https://pypi.org/project/fastesp/"><img src="https://img.shields.io/pypi/v/fastesp.svg" alt="PyPI"></a>
+        <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+      </p>
+      <p>
+        <strong>Exact electrostatic potential from a Gaussian-basis wavefunction — evaluated analytically, and solved on the GPU.</strong>
+      </p>
+    </td>
+  </tr>
+</table>
 
 ---
 
