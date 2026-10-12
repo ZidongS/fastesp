@@ -10,8 +10,8 @@ analytically, and solved on the GPU.**
 `fastesp` computes
 
 $$
-V(\mathbf{C}) = \sum_{A} \frac{Z_A}{\lvert \mathbf{C} - \mathbf{R}_A \rvert}
-- \sum_{\mu\nu} P_{\mu\nu}
+V(\mathbf{C}) = \sum_{A} \frac{Z_A}{\lvert \mathbf{C} - \mathbf{R}_A \rvert} -
+\sum_{\mu\nu} P_{\mu\nu}
 \Big\langle \mu \Big\lvert \frac{1}{\lvert \mathbf{r} - \mathbf{C} \rvert} \Big\rvert \nu \Big\rangle
 $$
 
@@ -114,7 +114,7 @@ g_A^{\mathbf{a}} g_B^{\mathbf{b}}
 \qquad
 \int \frac{\Lambda_{\mathbf{t}}(\mathbf{r}')}{\lvert \mathbf{R} - \mathbf{r}' \rvert} d\mathbf{r}'
   = (-1)^{\lvert \mathbf{t} \rvert}
-        \left(\frac{\partial}{\partial \mathbf{R}}\right)^{\mathbf{t}} F(\mathbf{R}),
+  \left(\frac{\partial}{\partial \mathbf{R}}\right)^{\mathbf{t}} F(\mathbf{R}),
 \qquad
 F(\mathbf{R}) = \frac{2\pi}{p} F_0\left(p R^2\right)
 $$
@@ -166,15 +166,12 @@ The MOLDEN format does not pin these down. All three were determined from the
 file itself and are verified by $\mathrm{Tr}(\mathbf{P}\mathbf{S}) = N_{\text{elec}}$
 and $\max\lvert \mathbf{C}^{\mathsf{T}} \mathbf{S} \mathbf{C} - \mathbf{I} \rvert$:
 
-1. **Primitive normalisation.** ORCA writes GTO coefficients that already include
-
-   $$
-   N_s(\alpha, l) = \left(\frac{2\alpha}{\pi}\right)^{3/4} (4\alpha)^{l/2},
-   $$
-
-   the radial prefactor *without* the angular $(2l-1)!!$ factor of a fully
-   normalised Cartesian Gaussian. Verified against every single-primitive p/d/f
-   shell in the test file to 8 digits.
+1. **Primitive normalisation.** ORCA writes GTO coefficients that already
+   include the radial prefactor
+   $N_s(\alpha, l) = (2\alpha/\pi)^{3/4}(4\alpha)^{l/2}$ — but *not* the
+   angular $(2l-1)!!$ factor that a fully normalised Cartesian Gaussian carries.
+   Verified against every single-primitive p/d/f shell in the test file to
+   8 digits.
 2. **Angular ordering.** The spherical functions are the real solid harmonics in
    MOLDEN order $m = 0, +1, -1, +2, -2, \dots$ (`fastesp/basis.py`, `_POLY`).
 3. **Cartesian ↔ spherical transform.** Rows are S-orthonormalised so that
