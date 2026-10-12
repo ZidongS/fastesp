@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastesp"
+version = "0.1.0"
+description = "Exact electrostatic potential from a Gaussian-basis wavefunction, evaluated analytically and solved on the GPU"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Zidong Shu" }]
+keywords = [
+  "computational-chemistry", "electrostatic-potential", "ESP", "wavefunction",
+  "gaussian-basis", "cuda", "gpu", "multiwfn", "orca", "molden",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: C++",
+  "Programming Language :: CUDA",
+  "Topic :: Scientific/Engineering :: Chemistry",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = ["numpy>=1.22", "scipy>=1.8"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+bench = ["matplotlib>=3.5"]
+
+[project.urls]
+Homepage = "https://github.com/ZidongS/fastesp"
+Repository = "https://github.com/ZidongS/fastesp"
+Issues = "https://github.com/ZidongS/fastesp/issues"
+
+[project.scripts]
+fastesp = "fastesp.cli:main"
+
+[tool.setuptools]
+packages = ["fastesp"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+fastesp = ["native/*.cpp", "native/*.cu", "py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

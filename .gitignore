@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+build/
+dist/
+.eggs/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# compiled backends and generated tables
+bin/
+*.bin
+
+# local run artefacts
+logs/
+results/
+
+# wavefunctions and sampled point sets from the authoring project are not
+# redistributed; see data/README.md
+data/
