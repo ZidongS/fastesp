@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "fastesp: exact electrostatic potential from a Gaussian-basis wavefunction on the GPU"
+abstract: >-
+  Computes the electrostatic potential at arbitrary points from a MOLDEN
+  wavefunction without real-space quadrature. The one-electron Coulomb integrals
+  are evaluated in closed form via a Hermite (McMurchie-Davidson) expansion of
+  the Gaussian product and Boys functions, contracted once per primitive pair
+  into point-independent tables that a CUDA kernel then evaluates. On a 54-atom
+  fragment (def2-TZVPPD, 1634 Cartesian functions) it is ~100x faster than
+  Multiwfn at 300 surface points and >1000x at 30000 points, and agrees with an
+  unscreened analytic evaluation to 1e-11 a.u.
+authors:
+  - family-names: Shu
+    given-names: Zidong
+license: MIT
+repository-code: "https://github.com/ZidongS/fastesp"
+type: software

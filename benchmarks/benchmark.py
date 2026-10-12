@@ -110,20 +110,22 @@ def main():
     # ---------------- our pipeline ---------------------------------------
     for npts in (300, 3000, 30000):
         pfile = point_sets[npts]
-        basis = work / f"basis_{npts}.bin"
+        basis_bin = work / f"basis_{npts}.bin"
         table = work / f"pairs_{npts}.bin"
         out = work / f"gpu_{npts}.txt"
 
+        # wavefunction load + basis build + payload dump: the "load" half of the
+        # pipeline, comparable to Multiwfn's own wavefunction load
         t0 = time.perf_counter()
         wfn = read_molden(str(molden))
-        basis = Basis(wfn)
-        dens = basis.density_matrix_cartesian()
-        write_basis_payload(basis_bin, basis_payload(wfn, basis, dens,
-                                                    np.loadtxt(pfile, skiprows=1)))
+        bs = Basis(wfn)
+        dens = bs.density_matrix_cartesian()
+        payload = basis_payload(wfn, bs, dens, np.loadtxt(pfile, skiprows=1))
+        write_basis_payload(basis_bin, payload)
         t_dump = time.perf_counter() - t0
 
         t0 = time.perf_counter()
-        sh([str(ROOT / "bin/build_pairs"), str(basis), str(table), "1e-12"])
+        sh([str(ROOT / "bin/build_pairs"), str(basis_bin), str(table), "1e-12"])
         t_build = time.perf_counter() - t0
 
         t0 = time.perf_counter()

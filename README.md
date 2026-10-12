@@ -1,5 +1,9 @@
 # fastesp
 
+[![tests](https://github.com/ZidongS/fastesp/actions/workflows/tests.yml/badge.svg)](https://github.com/ZidongS/fastesp/actions/workflows/tests.yml)
+[![PyPI](https://img.shields.io/pypi/v/fastesp.svg)](https://pypi.org/project/fastesp/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **Exact electrostatic potential from a Gaussian-basis wavefunction — evaluated
 analytically, and solved on the GPU.**
 
@@ -179,7 +183,7 @@ occupancy sum.
 ## Citation
 
 If you use this in published work, please cite the repository
-(https://github.com/ZidongS/fastesp).
+(https://github.com/ZidongS/fastesp) — see `CITATION.cff`.
 
 ## License
 
