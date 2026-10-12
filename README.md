@@ -9,16 +9,18 @@ analytically, and solved on the GPU.**
 
 `fastesp` computes
 
-```
-V(C) = sum_A Z_A/|C - R_A|  -  sum_{mu nu} P_{mu nu} < mu | 1/|r - C| | nu >
-```
+$$
+V(\mathbf{C}) \;=\; \sum_{A} \frac{Z_A}{\lvert \mathbf{C} - \mathbf{R}_A \rvert}
+\;-\; \sum_{\mu\nu} P_{\mu\nu}\,
+\Big\langle \mu \,\Big\lvert\, \frac{1}{\lvert \mathbf{r} - \mathbf{C} \rvert} \,\Big\rvert\, \nu \Big\rangle
+$$
 
-at an arbitrary set of points, without any real-space quadrature. The one-electron
-Coulomb integrals are evaluated in closed form (Hermite / McMurchie–Davidson
-expansion of the Gaussian product, Boys functions for the 1/r operator), so the
-result is exact to machine precision. It is a drop-in faster and more accurate
-replacement for the "electrostatic potential at a set of points" function of
-Multiwfn (menu `5 → 12 → 100`).
+at an arbitrary set of points, without any real-space quadrature. The
+one-electron Coulomb integrals are evaluated in closed form (Hermite /
+McMurchie–Davidson expansion of the Gaussian product, Boys functions for the
+$1/r$ operator), so the result is exact to machine precision. It is a drop-in
+faster and more accurate replacement for the "electrostatic potential at a set
+of points" function of Multiwfn (menu `5 → 12 → 100`).
 
 ## Benchmark
 
@@ -102,56 +104,84 @@ Bondi vdW surface of a molecule and evaluate the ESP on it.
 
 ## How it works
 
-For a pair of primitive Cartesian Gaussians, the product is one Gaussian times a
-polynomial. Expanding about the Gaussian product centre `P` in Hermite Gaussians
-`L_t` gives the exact closed form
+For a pair of primitive Cartesian Gaussians the product is a single Gaussian
+times a polynomial. Expanding about the Gaussian product centre $\mathbf{P}$ in
+Hermite Gaussians $\Lambda_{\mathbf{t}}$ gives the exact closed form
 
-```
-g_A^a g_B^b = K sum_t E_t L_t(r - P)
-int L_t(r')/|R - r'| dr' = (-1)^|t| (d/dR)^t F(R),   F(R) = (2 pi / p) F_0(p R^2)
-```
+$$
+g_A^{\mathbf{a}} g_B^{\mathbf{b}}
+  \;=\; K \sum_{\mathbf{t}} E_{\mathbf{t}}\, \Lambda_{\mathbf{t}}(\mathbf{r} - \mathbf{P}),
+\qquad
+\int \frac{\Lambda_{\mathbf{t}}(\mathbf{r}')}{\lvert \mathbf{R} - \mathbf{r}' \rvert}\, d\mathbf{r}'
+  \;=\; (-1)^{\lvert \mathbf{t} \rvert}
+        \left(\frac{\partial}{\partial \mathbf{R}}\right)^{\!\mathbf{t}} F(\mathbf{R}),
+\qquad
+F(\mathbf{R}) = \frac{2\pi}{p} F_0\!\left(p R^2\right)
+$$
 
-and `(d/dR)^t F` is expanded exactly by the one-dimensional recurrence
-`a[t+1][j] = -a[t][j] + (t-2j+2) a[t][j-1]`.
+and the derivative is expanded exactly by the one-dimensional recurrence
 
-The structural step that makes this fast: **everything except `R = C - P` is
-independent of the sampling point.** Contracting the E-coefficients, the `(-1)^|t|`
-signs and the `(2p)^m` factors over the Cartesian components and over the
-primitive pairs — weighted by the density matrix — yields, once per primitive
-pair, a sparse table `G[alpha, m]` such that
+$$
+a_{t+1,\,j} \;=\; -\,a_{t,\,j} \;+\; (t - 2j + 2)\, a_{t,\,j-1}.
+$$
 
-```
-I_pair(C) = K * sum_{alpha,m} G[alpha,m] * R^alpha * F_m(p R^2)
-```
+The structural step that makes this fast: **everything except
+$\mathbf{R} = \mathbf{C} - \mathbf{P}$ is independent of the sampling point.**
+Contracting the $E$-coefficients, the $(-1)^{\lvert \mathbf{t} \rvert}$ signs and
+the $(2p)^{m}$ factors over the Cartesian components and over the primitive
+pairs — weighted by the density matrix — yields, once per primitive pair, a
+sparse table $G[\boldsymbol{\alpha}, m]$ such that
+
+$$
+I_{\text{pair}}(\mathbf{C}) \;=\; K \sum_{\boldsymbol{\alpha},\, m}
+  G[\boldsymbol{\alpha}, m] \; \mathbf{R}^{\boldsymbol{\alpha}} \; F_m\!\left(p R^2\right).
+$$
 
 Per point that is one Boys evaluation, a short monomial schedule and one dot
-product — a shape that maps directly onto GPU threads. The `O(N_pairs)` table
-build is independent of the point set (and of how many points there are), so it
-is done once and reused; only the `O(N_pairs x N_points)` evaluation runs per
+product — a shape that maps directly onto GPU threads. The table build is
+$\mathcal{O}(N_{\text{pairs}})$ and independent of the point set (and of how many
+points there are), so it is done once and reused; only the
+$\mathcal{O}(N_{\text{pairs}} \times N_{\text{points}})$ evaluation runs per
 point set.
 
-Screening uses the rigorous bound `|I_pair| <= K * int|rho_pair| / d`, with
-`int|rho_pair|` obtained from the `|He_n|` moment products computed at build time.
-The builder also prints the sum rule `Tr(P S) = N_elec` as a sanity check on the
-basis it just read.
+Screening uses the rigorous bound
+
+$$
+\lvert I_{\text{pair}} \rvert \;\le\; K \, \frac{\int \lvert \rho_{\text{pair}} \rvert \, d\mathbf{r}}{d},
+$$
+
+where $\int \lvert \rho_{\text{pair}} \rvert \, d\mathbf{r}$ comes from the
+$\lvert He_n \rvert$ moment products computed at build time. The builder also
+prints the sum rule
+
+$$
+\mathrm{Tr}(\mathbf{P}\mathbf{S}) \;=\; N_{\text{elec}}
+$$
+
+as a sanity check on the basis it just read.
 
 ### MOLDEN conventions
 
 The MOLDEN format does not pin these down. All three were determined from the
-file itself and are verified by `Tr(P S) = N_elec` and `max|C^T S C - I|`:
+file itself and are verified by $\mathrm{Tr}(\mathbf{P}\mathbf{S}) = N_{\text{elec}}$
+and $\max\lvert \mathbf{C}^{\mathsf{T}} \mathbf{S} \mathbf{C} - \mathbf{I} \rvert$:
 
-1. **Primitive normalisation.** ORCA writes GTO coefficients that already
-   include `N_s = (2 alpha/pi)^{3/4} (4 alpha)^{l/2}` — the radial prefactor
-   *without* the angular `(2l-1)!!` factor of a fully normalised Cartesian
-   Gaussian. Verified against every single-primitive p/d/f shell in the test
-   file to 8 digits.
+1. **Primitive normalisation.** ORCA writes GTO coefficients that already include
+
+   $$
+   N_s(\alpha, l) \;=\; \left(\frac{2\alpha}{\pi}\right)^{3/4} (4\alpha)^{l/2},
+   $$
+
+   the radial prefactor *without* the angular $(2l-1)!!$ factor of a fully
+   normalised Cartesian Gaussian. Verified against every single-primitive p/d/f
+   shell in the test file to 8 digits.
 2. **Angular ordering.** The spherical functions are the real solid harmonics in
-   MOLDEN order `m = 0, +1, -1, +2, -2, ...` (`fastesp/basis.py`, `_POLY`).
+   MOLDEN order $m = 0, +1, -1, +2, -2, \dots$ (`fastesp/basis.py`, `_POLY`).
 3. **Cartesian ↔ spherical transform.** Rows are S-orthonormalised so that
-   `T S T^T = I`.
+   $\mathbf{T} \mathbf{S} \mathbf{T}^{\mathsf{T}} = \mathbf{I}$.
 
-If you have a wavefunction whose conventions differ, `Basis` +
-`overlap_matrix` will show it: `Tr(P S)` will not reproduce the MOLDEN
+If you have a wavefunction whose conventions differ, `Basis` + `overlap_matrix`
+will show it: $\mathrm{Tr}(\mathbf{P}\mathbf{S})$ will not reproduce the MOLDEN
 occupancy sum.
 
 ## Repository layout
@@ -173,7 +203,7 @@ occupancy sum.
 
 * Only the vacuum wavefunction ESP is implemented. Adding external point charges
   (e.g. a CPCM reaction field) is a one-line addition to the nuclear term.
-* `l = 4` (g) solid harmonics are tabulated but unverified — the test file has no
+* $l = 4$ (g) solid harmonics are tabulated but unverified — the test file has no
   g functions.
 * The GPU solver is fp64 throughout; there is headroom for a mixed-precision
   build if needed.
